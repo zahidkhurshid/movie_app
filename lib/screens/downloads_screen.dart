@@ -3,6 +3,11 @@ import 'package:flutter/services.dart';
 import '../config/app_settings.dart';
 import '../models/movie_model.dart';
 import '../services/download_service.dart';
+import '../screens/home_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/saved_screen.dart';
+import '../screens/search_screen.dart';
+import '../widgets/custom_bottom_nav.dart';
 
 class DownloadsScreen extends StatefulWidget {
   @override
@@ -30,10 +35,8 @@ class _DownloadsScreenState extends State<DownloadsScreen> with SingleTickerProv
     return Scaffold(
       backgroundColor: Color(0xFF0A0E21),
       appBar: AppBar(
-        title: Text('Download', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        title: Text('Downloads'),
+        backgroundColor: Color(0xFF0A0E21),
       ),
       body: Column(
         children: [
@@ -58,19 +61,38 @@ class _DownloadsScreenState extends State<DownloadsScreen> with SingleTickerProv
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF0A0E21),
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Saved'),
-          BottomNavigationBarItem(icon: Icon(Icons.file_download), label: 'Downloads'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
-        ],
-        currentIndex: 3, // Downloads tab is selected
+      bottomNavigationBar: CustomBottomNav(
+        currentIndex: 3,
+        onTap: (index) {
+          if (index != 3) {
+            switch (index) {
+              case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+                break;
+              case 1:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()),
+                );
+                break;
+              case 2:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavedScreen()),
+                );
+                break;
+              case 4:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
+                break;
+            }
+          }
+        },
       ),
     );
   }

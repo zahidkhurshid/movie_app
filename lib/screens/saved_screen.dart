@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import '../config/app_settings.dart';
 import '../models/movie_model.dart';
 import '../services/user_service.dart';
+import '../services/movie_service.dart';
 import 'movie_detail_screen.dart';
+import 'home_screen.dart';
+import 'search_screen.dart';
+import 'downloads_screen.dart';
+import 'profile_screen.dart';
+import '../widgets/custom_bottom_nav.dart';
 
 class SavedScreen extends StatefulWidget {
   @override
@@ -11,6 +17,7 @@ class SavedScreen extends StatefulWidget {
 
 class _SavedScreenState extends State<SavedScreen> {
   final UserService _userService = UserService();
+  final MovieService _movieService = MovieService();
   List<Movie> _savedMovies = [];
   bool _isLoading = true;
 
@@ -26,9 +33,12 @@ class _SavedScreenState extends State<SavedScreen> {
     });
 
     try {
-      final movies = await _userService.getFavoriteMovies();
+      final bookmarkedMovieIds = await _userService.getBookmarkedMovies();
+      final movies = await Future.wait(
+          bookmarkedMovieIds.map((id) => _movieService.getMovieDetails(id))
+      );
       setState(() {
-        _savedMovies = movies.cast<Movie>();
+        _savedMovies = movies;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -58,14 +68,16 @@ class _SavedScreenState extends State<SavedScreen> {
         itemBuilder: (context, index) {
           final movie = _savedMovies[index];
           return ListTile(
-            leading: Image.network(
-              '${AppSettings.imageBaseUrl}${movie.posterPath}',
+            leading: movie.posterUrl != null
+                ? Image.network(
+              movie.posterUrl!,
               width: 50,
               height: 75,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
                   Icon(Icons.movie, size: 50, color: Colors.grey),
-            ),
+            )
+                : Icon(Icons.movie, size: 50, color: Colors.grey),
             title: Text(movie.title, style: TextStyle(color: Colors.white)),
             subtitle: Text(
               movie.overview,
@@ -79,9 +91,42 @@ class _SavedScreenState extends State<SavedScreen> {
                 MaterialPageRoute(
                   builder: (context) => MovieDetailScreen(movie: movie),
                 ),
-              );
+              ).then((_) => _loadSavedMovies());
             },
           );
+        },
+      ),
+      bottomNavigationBar: CustomBottomNav(
+        currentIndex: 2,
+        onTap: (index) {
+          if (index != 2) {
+            switch (index) {
+              case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+                break;
+              case 1:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()),
+                );
+                break;
+              case 3:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => DownloadsScreen()),
+                );
+                break;
+              case 4:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
+                break;
+            }
+          }
         },
       ),
     );

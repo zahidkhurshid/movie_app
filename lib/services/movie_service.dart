@@ -12,6 +12,7 @@ class MovieService extends ChangeNotifier {
   List<Movie> _upcomingMovies = [];
   List<Movie> _nowPlayingMovies = [];
   List<Movie> _recommendations = [];
+  List<String> _searchHistory = [];
 
   List<Movie> get movies => _movies;
   List<Movie> get popularMovies => _popularMovies;
@@ -19,6 +20,7 @@ class MovieService extends ChangeNotifier {
   List<Movie> get upcomingMovies => _upcomingMovies;
   List<Movie> get nowPlayingMovies => _nowPlayingMovies;
   List<Movie> get recommendations => _recommendations;
+  List<String> get searchHistory => _searchHistory;
 
   Future<void> fetchMoviesByCategory(String category) async {
     final response = await http.get(
@@ -27,18 +29,23 @@ class MovieService extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final List<dynamic> results = json.decode(response.body)['results'];
+      final List<Movie> detailedMovies = [];
+      for (var movie in results) {
+        final detailedMovie = await getMovieDetails(movie['id']);
+        detailedMovies.add(detailedMovie);
+      }
       switch (category) {
         case 'popular':
-          _popularMovies = results.map((movie) => Movie.fromJson(movie)).toList();
+          _popularMovies = detailedMovies;
           break;
         case 'top_rated':
-          _topRatedMovies = results.map((movie) => Movie.fromJson(movie)).toList();
+          _topRatedMovies = detailedMovies;
           break;
         case 'upcoming':
-          _upcomingMovies = results.map((movie) => Movie.fromJson(movie)).toList();
+          _upcomingMovies = detailedMovies;
           break;
         case 'now_playing':
-          _nowPlayingMovies = results.map((movie) => Movie.fromJson(movie)).toList();
+          _nowPlayingMovies = detailedMovies;
           break;
       }
       _movies = _popularMovies; // Default to popular movies
@@ -91,9 +98,6 @@ class MovieService extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> _searchHistory = [];
-
-  List<String> get searchHistory => _searchHistory;
 
   MovieService() {
     _loadSearchHistory();
@@ -128,17 +132,74 @@ class MovieService extends ChangeNotifier {
   }
 
   Future<List<Movie>> searchMovies(String query) async {
+    try {
+      final response = await http.get(
+          Uri.parse('${AppSettings.apiBaseUrl}/search/movie?api_key=${AppSettings.apiKey}&query=$query')
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<dynamic> results = data['results'];
+
+        // Get detailed information for each movie
+        final List<Movie> movies = [];
+        for (var result in results) {
+          try {
+            final movieDetails = await getMovieDetails(result['id']);
+            movies.add(movieDetails);
+          } catch (e) {
+            print('Error fetching details for movie ${result['id']}: $e');
+            // Create a basic movie object if details fetch fails
+            movies.add(Movie.fromJson(result));
+          }
+        }
+
+        await addToSearchHistory(query);
+        return movies;
+      } else {
+        throw Exception('Failed to search movies');
+      }
+    } catch (e) {
+      print('Error in searchMovies: $e');
+      rethrow;
+    }
+  }
+
+  Future<Movie> getMovieDetails(int movieId) async {
+    try {
+      final response = await http.get(
+          Uri.parse('${AppSettings.apiBaseUrl}/movie/$movieId?api_key=${AppSettings.apiKey}&append_to_response=credits,similar')
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // Ensure genres are properly formatted
+        data['genres'] = (data['genres'] as List).map((genre) => genre['name'] as String).toList();
+        return Movie.fromJson(data);
+      } else {
+        throw Exception('Failed to load movie details');
+      }
+    } catch (e) {
+      print('Error in getMovieDetails: $e');
+      rethrow;
+    }
+  }
+
+  Future<String?> getMovieTrailer(int movieId) async {
     final response = await http.get(
-        Uri.parse('${AppSettings.apiBaseUrl}/search/movie?api_key=${AppSettings.apiKey}&query=$query')
+        Uri.parse('${AppSettings.apiBaseUrl}/movie/$movieId/videos?api_key=${AppSettings.apiKey}')
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> results = json.decode(response.body)['results'];
-      await addToSearchHistory(query);
-      return results.map((movie) => Movie.fromJson(movie)).toList();
-    } else {
-      throw Exception(AppSettings.networkErrorMessage);
+      final data = json.decode(response.body);
+      final results = data['results'] as List;
+      final trailers = results.where((video) => video['type'] == 'Trailer' && video['site'] == 'YouTube').toList();
+
+      if (trailers.isNotEmpty) {
+        return 'https://www.youtube.com/watch?v=${trailers.first['key']}';
+      }
     }
+    return null;
   }
 }
 

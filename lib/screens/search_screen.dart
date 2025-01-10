@@ -4,6 +4,11 @@ import '../services/movie_service.dart';
 import '../models/movie_model.dart';
 import '../config/app_settings.dart';
 import 'movie_detail_screen.dart';
+import 'home_screen.dart';
+import 'saved_screen.dart';
+import 'downloads_screen.dart';
+import 'profile_screen.dart';
+import '../widgets/custom_bottom_nav.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -110,6 +115,39 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNav(
+        currentIndex: 1,
+        onTap: (index) {
+          if (index != 1) {
+            switch (index) {
+              case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+                break;
+              case 2:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavedScreen()),
+                );
+                break;
+              case 3:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => DownloadsScreen()),
+                );
+                break;
+              case 4:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
+                break;
+            }
+          }
+        },
       ),
     );
   }

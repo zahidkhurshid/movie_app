@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../models/movie_model.dart';
 import '../config/app_settings.dart';
 import '../services/download_service.dart';
+import '../services/user_service.dart';
+import '../services/movie_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MovieDetailScreen extends StatefulWidget {
@@ -17,21 +21,87 @@ class MovieDetailScreen extends StatefulWidget {
 class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final DownloadService _downloadService = DownloadService();
+  final UserService _userService = UserService();
   bool _isExpanded = false;
+  bool _isBookmarked = false;
+  bool _isPlaying = false;
+  bool _showPlayer = false;
+  YoutubePlayerController? _youtubeController;
+  String? _trailerUrl;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _checkIfBookmarked();
+    _loadTrailer();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _youtubeController?.dispose();
     super.dispose();
   }
 
+  Future<void> _checkIfBookmarked() async {
+    final isBookmarked = await _userService.isMovieBookmarked(widget.movie.id);
+    setState(() {
+      _isBookmarked = isBookmarked;
+    });
+  }
+
+  Future<void> _toggleBookmark() async {
+    setState(() {
+      _isBookmarked = !_isBookmarked;
+    });
+    if (_isBookmarked) {
+      await _userService.addBookmark(widget.movie);
+    } else {
+      await _userService.removeBookmark(widget.movie.id);
+    }
+  }
+
+  Future<void> _loadTrailer() async {
+    final movieService = Provider.of<MovieService>(context, listen: false);
+    final trailerUrl = await movieService.getMovieTrailer(widget.movie.id);
+    if (trailerUrl != null) {
+      setState(() {
+        _trailerUrl = trailerUrl;
+      });
+      _initializeYoutubePlayer();
+    }
+  }
+
+  void _initializeYoutubePlayer() {
+    if (_trailerUrl != null) {
+      final videoId = YoutubePlayer.convertUrlToId(_trailerUrl!);
+      if (videoId != null) {
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+          ),
+        );
+      }
+    }
+  }
+
+  void _togglePlayPause() {
+    setState(() {
+      _isPlaying = !_isPlaying;
+      _showPlayer = true;
+      if (_isPlaying) {
+        _youtubeController?.play();
+      } else {
+        _youtubeController?.pause();
+      }
+    });
+  }
+
   String _formatDuration(int minutes) {
+    if (minutes == 0) return 'N/A';
     final hours = minutes ~/ 60;
     final remainingMinutes = minutes % 60;
     return '${hours}h ${remainingMinutes}m';
@@ -40,27 +110,29 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0A0E21),
+      backgroundColor: Color(0xFF1A1A1A),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.bookmark_border, color: Colors.white),
-            onPressed: () {
-              // TODO: Implement bookmark functionality
-            },
+            icon: Icon(
+              _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+              color: Colors.white,
+              size: 20,
+            ),
+            onPressed: _toggleBookmark,
           ),
           IconButton(
-            icon: Icon(Icons.share, color: Colors.white),
+            icon: Icon(Icons.share, color: Colors.white, size: 20),
             onPressed: () {
-              Share.share('Check out this movie: ${widget.movie.title}\n\n${widget.movie.overview}');
+              Share.share('Check out ${widget.movie.title}!');
             },
           ),
         ],
@@ -69,13 +141,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero Image with Gradient Overlay
+            // Hero Image
             Container(
               height: 400,
               width: double.infinity,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage('${AppSettings.imageBaseUrl}${widget.movie.posterPath}'),
+                  image: NetworkImage(widget.movie.backdropUrl ?? widget.movie.posterUrl ?? ''),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -86,42 +158,34 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Color(0xFF0A0E21).withOpacity(0.8),
-                      Color(0xFF0A0E21),
-                    ],
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.movie.title,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '${widget.movie.releaseDate.year} • ${widget.movie.genres.join(', ')} • ${_formatDuration(widget.movie.runtime)}',
-                        style: TextStyle(color: Colors.grey[400]),
-                      ),
+                      Color(0xFF1A1A1A).withOpacity(0.8),
+                      Color(0xFF1A1A1A),
                     ],
                   ),
                 ),
               ),
             ),
 
-            // Description
+            // Movie Info
             Padding(
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    widget.movie.title,
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '${widget.movie.releaseDate.year} • ${widget.movie.genres.take(2).join(', ')} • ${_formatDuration(widget.movie.runtime)}',
+                    style: TextStyle(color: Colors.grey[400], fontSize: 14),
+                  ),
+                  SizedBox(height: 16),
                   Text(
                     widget.movie.overview,
                     maxLines: _isExpanded ? null : 2,
@@ -157,8 +221,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      icon: Icon(Icons.play_arrow),
-                      label: Text('Play'),
+                      icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                      label: Text(_isPlaying ? 'Pause' : 'Play'),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white, backgroundColor: Colors.red,
                         padding: EdgeInsets.symmetric(vertical: 16),
@@ -166,9 +230,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: () {
-                        // TODO: Implement play functionality
-                      },
+                      onPressed: _togglePlayPause,
                     ),
                   ),
                   SizedBox(width: 16),
@@ -177,7 +239,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
                       icon: Icon(Icons.download),
                       label: Text('Download'),
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.grey[900],
+                        foregroundColor: Colors.white, backgroundColor: Color(0xFF2A2A2A),
                         padding: EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -195,6 +257,35 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
               ),
             ),
 
+            // YouTube Player
+            if (_showPlayer && _youtubeController != null)
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.black,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: YoutubePlayer(
+                    controller: _youtubeController!,
+                    showVideoProgressIndicator: true,
+                    progressIndicatorColor: Colors.red,
+                    progressColors: ProgressBarColors(
+                      playedColor: Colors.red,
+                      handleColor: Colors.red,
+                      bufferedColor: Colors.grey[700]!,
+                      backgroundColor: Colors.grey[900]!,
+                    ),
+                    onEnded: (data) {
+                      setState(() {
+                        _isPlaying = false;
+                      });
+                    },
+                  ),
+                ),
+              ),
+
             // Tabs
             Padding(
               padding: EdgeInsets.only(top: 24),
@@ -210,6 +301,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
                     indicatorColor: Colors.red,
                     labelColor: Colors.red,
                     unselectedLabelColor: Colors.grey,
+                    indicatorSize: TabBarIndicatorSize.label,
                   ),
                   Container(
                     height: 200,
@@ -233,40 +325,38 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
   }
 
   Widget _buildEpisodeTab() {
-    return Column(
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              '${AppSettings.imageBaseUrl}${widget.movie.posterPath}',
-              width: 120,
-              height: 70,
-              fit: BoxFit.cover,
-            ),
-          ),
-          title: Text(
-            'Trailer',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          subtitle: Text(
-            widget.movie.overview,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.grey),
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.download, color: Colors.white),
-            onPressed: () {
-              // TODO: Implement trailer download
-            },
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFF2A2A2A),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(12),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            widget.movie.posterUrl ?? '',
+            width: 100,
+            height: 60,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Icon(Icons.movie, size: 60, color: Colors.grey),
           ),
         ),
-      ],
+        title: Text(
+          'Trailer',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          widget.movie.overview,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(color: Colors.grey[400]),
+        ),
+        trailing: Icon(Icons.download, color: Colors.white),
+      ),
     );
   }
 
@@ -274,7 +364,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
     return Center(
       child: Text(
         'Similar movies will appear here',
-        style: TextStyle(color: Colors.grey),
+        style: TextStyle(color: Colors.grey[400]),
       ),
     );
   }
@@ -301,7 +391,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with SingleTicker
           Text(
             label,
             style: TextStyle(
-              color: Colors.grey,
+              color: Colors.grey[400],
               fontSize: 12,
             ),
           ),

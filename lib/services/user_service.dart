@@ -62,5 +62,33 @@ class UserService {
       );
     }).toList();
   }
+
+  Future<void> addBookmark(Movie movie) async {
+    String userId = _auth.currentUser!.uid;
+    await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).update({
+      'bookmarkedMovies': FieldValue.arrayUnion([movie.id]),
+    });
+  }
+
+  Future<void> removeBookmark(int movieId) async {
+    String userId = _auth.currentUser!.uid;
+    await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).update({
+      'bookmarkedMovies': FieldValue.arrayRemove([movieId]),
+    });
+  }
+
+  Future<bool> isMovieBookmarked(int movieId) async {
+    String userId = _auth.currentUser!.uid;
+    DocumentSnapshot doc = await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).get();
+    List<dynamic> bookmarkedMovies = doc['bookmarkedMovies'] ?? [];
+    return bookmarkedMovies.contains(movieId);
+  }
+
+  Future<List<int>> getBookmarkedMovies() async {
+    String userId = _auth.currentUser!.uid;
+    DocumentSnapshot doc = await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).get();
+    List<dynamic> bookmarkedMovies = doc.get('bookmarkedMovies') ?? [];
+    return bookmarkedMovies.cast<int>();
+  }
 }
 

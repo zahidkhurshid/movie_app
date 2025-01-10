@@ -22,34 +22,45 @@ class Movie {
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
+    // Handle potential null or invalid release date
+    DateTime parseDate(String? dateStr) {
+      if (dateStr == null || dateStr.isEmpty) {
+        return DateTime.now(); // Default to current date if no date provided
+      }
+      try {
+        return DateTime.parse(dateStr);
+      } catch (e) {
+        print('Invalid date format: $dateStr');
+        return DateTime.now(); // Default to current date if parsing fails
+      }
+    }
+
     return Movie(
-      id: json['id'],
-      title: json['title'],
-      overview: json['overview'],
-      posterPath: json['poster_path'],
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      overview: json['overview'] ?? '',
+      posterPath: json['poster_path'] ?? '',
       backdropPath: json['backdrop_path'] ?? '',
-      genres: List<String>.from(json['genres']?.map((genre) => genre['name']) ?? []),
+      genres: List<String>.from(json['genres'] ?? []),
       runtime: json['runtime'] ?? 0,
       fileSize: json['file_size'] ?? 0,
-      releaseDate: DateTime.parse(json['release_date']),
+      releaseDate: parseDate(json['release_date']),
     );
   }
 
-  // posterUrl getter
   String? get posterUrl {
     if (posterPath.isEmpty) {
-      return null; // Return null if posterPath is empty
+      return null;
     }
-    const baseUrl = 'https://image.tmdb.org/t/p/w500'; // Example base URL for TMDb images
+    const baseUrl = 'https://image.tmdb.org/t/p/w500';
     return '$baseUrl$posterPath';
   }
 
-  // Getter for backdropUrl
   String? get backdropUrl {
     if (backdropPath.isEmpty) {
       return null;
     }
-    const baseUrl = 'https://image.tmdb.org/t/p/w500';  // Same base URL as poster
+    const baseUrl = 'https://image.tmdb.org/t/p/w500';
     return '$baseUrl$backdropPath';
   }
 

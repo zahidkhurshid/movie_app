@@ -11,16 +11,17 @@ class SettingsScreen extends StatelessWidget {
     final movieService = Provider.of<MovieService>(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
-        title: Text('Settings', style: TextStyle(color: Theme.of(context).textTheme.titleLarge?.color)),
+        title: Text('Settings', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: IconThemeData(color: themeProvider.isDarkMode ? Colors.white : Colors.black),
       ),
       body: ListView(
         children: [
           SwitchListTile(
-            title: Text('Dark Mode', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+            title: Text('Dark Mode', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
             value: themeProvider.isDarkMode,
             onChanged: (value) {
               themeProvider.toggleTheme();
@@ -28,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
             activeColor: AppSettings.primaryColor,
           ),
           ListTile(
-            title: Text('Clear Search History', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+            title: Text('Clear Search History', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
             onTap: () async {
               await movieService.clearSearchHistory();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -37,20 +38,20 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Privacy Policy', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+            title: Text('Privacy Policy', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
             onTap: () {
               // TODO: Navigate to privacy policy screen
             },
           ),
           ListTile(
-            title: Text('Terms of Service', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+            title: Text('Terms of Service', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
             onTap: () {
               // TODO: Navigate to terms of service screen
             },
           ),
           ListTile(
-            title: Text('App Version', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
-            trailing: Text(AppSettings.appVersion, style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
+            title: Text('App Version', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
+            trailing: Text(AppSettings.appVersion, style: TextStyle(color: themeProvider.isDarkMode ? Colors.grey[300] : Colors.grey[600])),
           ),
         ],
       ),

@@ -30,7 +30,7 @@ class AppSettings {
 
   // Text Styles
   static const TextStyle headlineStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
