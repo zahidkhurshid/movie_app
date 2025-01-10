@@ -3,12 +3,13 @@ import '../config/app_settings.dart';
 import '../models/movie_model.dart';
 import '../services/user_service.dart';
 import '../services/movie_service.dart';
+import '../widgets/custom_bottom_nav.dart';
 import 'movie_detail_screen.dart';
 import 'home_screen.dart';
 import 'search_screen.dart';
 import 'downloads_screen.dart';
 import 'profile_screen.dart';
-import '../widgets/custom_bottom_nav.dart';
+import '../widgets/custom_bottom_nav222.dart';
 
 class SavedScreen extends StatefulWidget {
   @override

@@ -8,6 +8,7 @@ import '../screens/profile_screen.dart';
 import '../screens/saved_screen.dart';
 import '../screens/search_screen.dart';
 import '../widgets/custom_bottom_nav.dart';
+import '../widgets/custom_bottom_nav222.dart';
 
 class DownloadsScreen extends StatefulWidget {
   @override

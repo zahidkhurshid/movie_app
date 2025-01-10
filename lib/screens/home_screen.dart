@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/movie_model.dart';
 import '../services/movie_service.dart';
+import '../widgets/custom_bottom_nav.dart';
 import '../widgets/movie_list.dart';
 import '../config/app_settings.dart';
 import 'search_screen.dart';
@@ -10,7 +11,7 @@ import 'saved_screen.dart';
 import 'downloads_screen.dart';
 import 'profile_screen.dart';
 import 'movie_detail_screen.dart';
-import '../widgets/custom_bottom_nav.dart';
+import '../widgets/custom_bottom_nav222.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

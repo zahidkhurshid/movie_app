@@ -3,12 +3,13 @@ import 'package:provider/provider.dart';
 import '../services/movie_service.dart';
 import '../models/movie_model.dart';
 import '../config/app_settings.dart';
+import '../widgets/custom_bottom_nav.dart';
 import 'movie_detail_screen.dart';
 import 'home_screen.dart';
 import 'saved_screen.dart';
 import 'downloads_screen.dart';
 import 'profile_screen.dart';
-import '../widgets/custom_bottom_nav.dart';
+
 
 class SearchScreen extends StatefulWidget {
   @override
