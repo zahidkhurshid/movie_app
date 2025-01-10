@@ -36,10 +36,10 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       textTheme: TextTheme(
-        titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+        titleLarge: TextStyle(
+            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         bodyMedium: TextStyle(fontSize: 14, color: Colors.white70),
       ),
     );
   }
 }
-

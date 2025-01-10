@@ -34,13 +34,16 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
       title: AppSettings.appName,
-      theme: themeProvider.isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme,
+      theme:
+          themeProvider.isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme,
       home: HomeScreen(),
       supportedLocales: AppSettings.supportedLocales,
       localizationsDelegates: [
@@ -49,4 +52,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

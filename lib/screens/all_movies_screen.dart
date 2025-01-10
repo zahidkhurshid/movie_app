@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/movie_model.dart';
 import '../widgets/movie_list.dart';
-import '../config/app_settings.dart';
 
 class AllMoviesScreen extends StatelessWidget {
   final String title;
   final List<Movie> movies;
 
   const AllMoviesScreen({
-    Key? key,
+    super.key,
     required this.title,
     required this.movies,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,4 +24,3 @@ class AllMoviesScreen extends StatelessWidget {
     );
   }
 }
-

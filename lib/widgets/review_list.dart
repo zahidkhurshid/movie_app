@@ -5,7 +5,7 @@ import '../config/app_settings.dart';
 class ReviewList extends StatelessWidget {
   final int movieId;
 
-  ReviewList({required this.movieId});
+  const ReviewList({super.key, required this.movieId});
 
   // TODO: Implement fetching reviews from API
 
@@ -16,21 +16,21 @@ class ReviewList extends StatelessWidget {
       Review(
           id: '1',
           author: 'John Doe',
-          content: 'Great movie! The special effects were mind-blowing and the plot kept me on the edge of my seat.',
+          content:
+              'Great movie! The special effects were mind-blowing and the plot kept me on the edge of my seat.',
           rating: 4.5,
           userId: 'user123',
           userName: 'movie_buff_john',
-          comment: 'Definitely worth watching in IMAX!'
-      ),
+          comment: 'Definitely worth watching in IMAX!'),
       Review(
           id: '2',
           author: 'Jane Smith',
-          content: 'Enjoyed it a lot. The acting was superb and the cinematography was breathtaking.',
+          content:
+              'Enjoyed it a lot. The acting was superb and the cinematography was breathtaking.',
           rating: 4.0,
           userId: 'user456',
           userName: 'cinemagic_jane',
-          comment: 'A must-see for any film enthusiast.'
-      ),
+          comment: 'A must-see for any film enthusiast.'),
       Review(
           id: '3',
           author: 'Mike Johnson',
@@ -38,8 +38,7 @@ class ReviewList extends StatelessWidget {
           rating: 3.5,
           userId: 'user789',
           userName: 'critical_mike',
-          comment: 'Good performances, but the script could use some work.'
-      ),
+          comment: 'Good performances, but the script could use some work.'),
     ];
 
     return ListView.builder(
@@ -73,5 +72,3 @@ class ReviewList extends StatelessWidget {
     );
   }
 }
-
-

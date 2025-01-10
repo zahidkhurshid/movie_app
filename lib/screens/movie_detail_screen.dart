@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../models/movie_model.dart';
-import '../config/app_settings.dart';
 import '../services/download_service.dart';
 import '../services/user_service.dart';
 import '../services/movie_service.dart';
@@ -12,7 +11,7 @@ import 'package:share_plus/share_plus.dart';
 class MovieDetailScreen extends StatefulWidget {
   final Movie movie;
 
-  MovieDetailScreen({Key? key, required this.movie}) : super(key: key);
+  const MovieDetailScreen({super.key, required this.movie});
 
   @override
   _MovieDetailScreenState createState() => _MovieDetailScreenState();

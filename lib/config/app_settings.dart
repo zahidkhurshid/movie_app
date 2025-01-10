@@ -58,16 +58,19 @@ class AppSettings {
   static const double minRating = 0.5;
   static const double maxRating = 5.0;
   static const double ratingStep = 1.0;
-  static const double iconSize= 24.0;
+  static const double iconSize = 24.0;
 
   // Recommendation Settings
   static const int maxRecommendations = 10;
   static const double similarityThreshold = 0.7;
 
   // Error Messages
-  static const String genericErrorMessage = 'An error occurred. Please try again.';
-  static const String networkErrorMessage = 'Network error. Please check your internet connection.';
-  static const String authErrorMessage = 'Authentication failed. Please log in again.';
+  static const String genericErrorMessage =
+      'An error occurred. Please try again.';
+  static const String networkErrorMessage =
+      'Network error. Please check your internet connection.';
+  static const String authErrorMessage =
+      'Authentication failed. Please log in again.';
 
   // Localization
   static const Locale defaultLocale = Locale('en', 'US');
@@ -77,4 +80,3 @@ class AppSettings {
     Locale('fr', 'FR'),
   ];
 }
-

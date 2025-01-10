@@ -14,7 +14,8 @@ class RecommendationList extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text('Recommendations', style: Theme.of(context).textTheme.titleLarge),
+          child: Text('Recommendations',
+              style: Theme.of(context).textTheme.titleLarge),
         ),
         Expanded(
           child: ListView.builder(
@@ -36,9 +37,11 @@ class RecommendationList extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 8),
                   child: Column(
                     children: [
-                      Image.network(movie.posterUrl!, height: 180, width: 120, fit: BoxFit.cover),
+                      Image.network(movie.posterUrl!,
+                          height: 180, width: 120, fit: BoxFit.cover),
                       SizedBox(height: 4),
-                      Text(movie.title, maxLines: 2, textAlign: TextAlign.center),
+                      Text(movie.title,
+                          maxLines: 2, textAlign: TextAlign.center),
                     ],
                   ),
                 ),
@@ -50,4 +53,3 @@ class RecommendationList extends StatelessWidget {
     );
   }
 }
-

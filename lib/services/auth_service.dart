@@ -9,10 +9,12 @@ class AuthService {
   Future<UserCredential> signUp(String email, String password) async {
     try {
       if (password.length < FirebaseSettings.passwordMinLength) {
-        throw Exception('Password must be at least ${FirebaseSettings.passwordMinLength} characters long');
+        throw Exception(
+            'Password must be at least ${FirebaseSettings.passwordMinLength} characters long');
       }
 
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -21,7 +23,10 @@ class AuthService {
         await userCredential.user!.sendEmailVerification();
       }
 
-      await _firestore.collection(FirebaseSettings.usersCollection).doc(userCredential.user!.uid).set({
+      await _firestore
+          .collection(FirebaseSettings.usersCollection)
+          .doc(userCredential.user!.uid)
+          .set({
         'email': email,
         'favoriteMovies': [],
       });
@@ -40,7 +45,8 @@ class AuthService {
         password: password,
       );
 
-      if (FirebaseSettings.emailVerificationRequired && !userCredential.user!.emailVerified) {
+      if (FirebaseSettings.emailVerificationRequired &&
+          !userCredential.user!.emailVerified) {
         throw Exception('Please verify your email before signing in.');
       }
 
@@ -72,4 +78,3 @@ class AuthService {
     return user?.emailVerified ?? false;
   }
 }
-

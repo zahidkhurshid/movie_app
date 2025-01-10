@@ -15,17 +15,22 @@ class MovieService extends ChangeNotifier {
   List<String> _searchHistory = [];
 
   List<Movie> get movies => _movies;
+
   List<Movie> get popularMovies => _popularMovies;
+
   List<Movie> get topRatedMovies => _topRatedMovies;
+
   List<Movie> get upcomingMovies => _upcomingMovies;
+
   List<Movie> get nowPlayingMovies => _nowPlayingMovies;
+
   List<Movie> get recommendations => _recommendations;
+
   List<String> get searchHistory => _searchHistory;
 
   Future<void> fetchMoviesByCategory(String category) async {
-    final response = await http.get(
-        Uri.parse('${AppSettings.apiBaseUrl}/movie/$category?api_key=${AppSettings.apiKey}')
-    );
+    final response = await http.get(Uri.parse(
+        '${AppSettings.apiBaseUrl}/movie/$category?api_key=${AppSettings.apiKey}'));
 
     if (response.statusCode == 200) {
       final List<dynamic> results = json.decode(response.body)['results'];
@@ -58,13 +63,15 @@ class MovieService extends ChangeNotifier {
   Future<void> fetchRecommendations(int movieId) async {
     if (!AppSettings.enableRecommendations) return;
 
-    final response = await http.get(
-        Uri.parse('${AppSettings.apiBaseUrl}/movie/$movieId/recommendations?api_key=${AppSettings.apiKey}')
-    );
+    final response = await http.get(Uri.parse(
+        '${AppSettings.apiBaseUrl}/movie/$movieId/recommendations?api_key=${AppSettings.apiKey}'));
 
     if (response.statusCode == 200) {
       final List<dynamic> results = json.decode(response.body)['results'];
-      _recommendations = results.map((movie) => Movie.fromJson(movie)).take(AppSettings.maxRecommendations).toList();
+      _recommendations = results
+          .map((movie) => Movie.fromJson(movie))
+          .take(AppSettings.maxRecommendations)
+          .toList();
       notifyListeners();
     } else {
       throw Exception(AppSettings.networkErrorMessage);
@@ -97,7 +104,6 @@ class MovieService extends ChangeNotifier {
     }
     notifyListeners();
   }
-
 
   MovieService() {
     _loadSearchHistory();
@@ -133,9 +139,8 @@ class MovieService extends ChangeNotifier {
 
   Future<List<Movie>> searchMovies(String query) async {
     try {
-      final response = await http.get(
-          Uri.parse('${AppSettings.apiBaseUrl}/search/movie?api_key=${AppSettings.apiKey}&query=$query')
-      );
+      final response = await http.get(Uri.parse(
+          '${AppSettings.apiBaseUrl}/search/movie?api_key=${AppSettings.apiKey}&query=$query'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -167,14 +172,15 @@ class MovieService extends ChangeNotifier {
 
   Future<Movie> getMovieDetails(int movieId) async {
     try {
-      final response = await http.get(
-          Uri.parse('${AppSettings.apiBaseUrl}/movie/$movieId?api_key=${AppSettings.apiKey}&append_to_response=credits,similar')
-      );
+      final response = await http.get(Uri.parse(
+          '${AppSettings.apiBaseUrl}/movie/$movieId?api_key=${AppSettings.apiKey}&append_to_response=credits,similar'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // Ensure genres are properly formatted
-        data['genres'] = (data['genres'] as List).map((genre) => genre['name'] as String).toList();
+        data['genres'] = (data['genres'] as List)
+            .map((genre) => genre['name'] as String)
+            .toList();
         return Movie.fromJson(data);
       } else {
         throw Exception('Failed to load movie details');
@@ -186,14 +192,16 @@ class MovieService extends ChangeNotifier {
   }
 
   Future<String?> getMovieTrailer(int movieId) async {
-    final response = await http.get(
-        Uri.parse('${AppSettings.apiBaseUrl}/movie/$movieId/videos?api_key=${AppSettings.apiKey}')
-    );
+    final response = await http.get(Uri.parse(
+        '${AppSettings.apiBaseUrl}/movie/$movieId/videos?api_key=${AppSettings.apiKey}'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final results = data['results'] as List;
-      final trailers = results.where((video) => video['type'] == 'Trailer' && video['site'] == 'YouTube').toList();
+      final trailers = results
+          .where((video) =>
+              video['type'] == 'Trailer' && video['site'] == 'YouTube')
+          .toList();
 
       if (trailers.isNotEmpty) {
         return 'https://www.youtube.com/watch?v=${trailers.first['key']}';
@@ -202,4 +210,3 @@ class MovieService extends ChangeNotifier {
     return null;
   }
 }
-

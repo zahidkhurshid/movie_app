@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import '../config/app_settings.dart';
 
 class HelpSupportScreen extends StatelessWidget {
+  const HelpSupportScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Help & Support', style: TextStyle(color: Theme.of(context).textTheme.titleLarge?.color)),
+        title: Text('Help & Support',
+            style: TextStyle(
+                color: Theme.of(context).textTheme.titleLarge?.color)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -18,33 +21,31 @@ class HelpSupportScreen extends StatelessWidget {
             items: [
               {
                 'question': 'How do I create an account?',
-                'answer': 'To create an account, tap the "Sign Up" button on the login screen and follow the prompts to enter your email, password, and other required information.'
+                'answer':
+                    'To create an account, tap the "Sign Up" button on the login screen and follow the prompts to enter your email, password, and other required information.'
               },
               {
                 'question': 'How do I reset my password?',
-                'answer': 'To reset your password, go to the login screen and tap "Forgot Password". Enter your email address, and we\'ll send you instructions to reset your password.'
+                'answer':
+                    'To reset your password, go to the login screen and tap "Forgot Password". Enter your email address, and we\'ll send you instructions to reset your password.'
               },
               {
                 'question': 'How do I download movies?',
-                'answer': 'To download a movie, go to the movie details page and tap the "Download" button. Make sure you have enough storage space on your device.'
+                'answer':
+                    'To download a movie, go to the movie details page and tap the "Download" button. Make sure you have enough storage space on your device.'
               },
               {
                 'question': 'How do I cancel my subscription?',
-                'answer': 'To cancel your subscription, go to the Settings screen, tap on "Subscription", and then select "Cancel Subscription". Follow the prompts to complete the cancellation process.'
+                'answer':
+                    'To cancel your subscription, go to the Settings screen, tap on "Subscription", and then select "Cancel Subscription". Follow the prompts to complete the cancellation process.'
               },
             ],
           ),
           _buildSection(
             title: 'Contact Us',
             items: [
-              {
-                'question': 'Email',
-                'answer': 'support@movieapp.com'
-              },
-              {
-                'question': 'Phone',
-                'answer': '+1 (123) 456-7890'
-              },
+              {'question': 'Email', 'answer': 'support@movieapp.com'},
+              {'question': 'Phone', 'answer': '+1 (123) 456-7890'},
               {
                 'question': 'Live Chat',
                 'answer': 'Start a live chat session with our support team.'
@@ -56,19 +57,23 @@ class HelpSupportScreen extends StatelessWidget {
             items: [
               {
                 'question': 'Playback issues',
-                'answer': 'If you\'re experiencing playback issues, try clearing your app cache, checking your internet connection, or reinstalling the app.'
+                'answer':
+                    'If you\'re experiencing playback issues, try clearing your app cache, checking your internet connection, or reinstalling the app.'
               },
               {
                 'question': 'Account issues',
-                'answer': 'For account-related problems, please contact our support team via email or live chat.'
+                'answer':
+                    'For account-related problems, please contact our support team via email or live chat.'
               },
               {
                 'question': 'Billing issues',
-                'answer': 'If you have questions about billing, please review your subscription details in the app or contact our support team.'
+                'answer':
+                    'If you have questions about billing, please review your subscription details in the app or contact our support team.'
               },
               {
                 'question': 'App crashes',
-                'answer': 'If the app is crashing, try updating to the latest version, clearing the app cache, or reinstalling the app.'
+                'answer':
+                    'If the app is crashing, try updating to the latest version, clearing the app cache, or reinstalling the app.'
               },
             ],
           ),
@@ -95,13 +100,14 @@ class HelpSupportScreen extends StatelessWidget {
             },
           );
         },
-        child: Icon(Icons.chat),
         tooltip: 'Start Live Chat',
+        child: Icon(Icons.chat),
       ),
     );
   }
 
-  Widget _buildSection({required String title, required List<Map<String, String>> items}) {
+  Widget _buildSection(
+      {required String title, required List<Map<String, String>> items}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -113,17 +119,16 @@ class HelpSupportScreen extends StatelessWidget {
           ),
         ),
         ...items.map((item) => ExpansionTile(
-          title: Text(item['question']!),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(item['answer']!),
-            ),
-          ],
-        )),
+              title: Text(item['question']!),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(item['answer']!),
+                ),
+              ],
+            )),
         Divider(),
       ],
     );
   }
 }
-

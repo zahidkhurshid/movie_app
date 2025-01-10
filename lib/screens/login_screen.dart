@@ -6,6 +6,8 @@ import 'signup_screen.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -117,9 +119,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 24),
                   ElevatedButton(
-                    child: _isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Log In'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppSettings.primaryColor,
                       padding: EdgeInsets.symmetric(vertical: 16),
@@ -128,6 +127,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: _isLoading ? null : _login,
+                    child: _isLoading
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text('Log In'),
                   ),
                   if (_errorMessage.isNotEmpty)
                     Padding(
@@ -163,7 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => SignupScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => SignupScreen()),
                           );
                         },
                       ),
@@ -178,4 +181,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

@@ -10,21 +10,30 @@ class UserService {
 
   Future<void> addFavoriteMovie(Movie movie) async {
     String userId = _auth.currentUser!.uid;
-    await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).update({
+    await _firestore
+        .collection(FirebaseSettings.usersCollection)
+        .doc(userId)
+        .update({
       'favoriteMovies': FieldValue.arrayUnion([movie.id]),
     });
   }
 
   Future<void> removeFavoriteMovie(Movie movie) async {
     String userId = _auth.currentUser!.uid;
-    await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).update({
+    await _firestore
+        .collection(FirebaseSettings.usersCollection)
+        .doc(userId)
+        .update({
       'favoriteMovies': FieldValue.arrayRemove([movie.id]),
     });
   }
 
   Future<List<int>> getFavoriteMovies() async {
     String userId = _auth.currentUser!.uid;
-    DocumentSnapshot doc = await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).get();
+    DocumentSnapshot doc = await _firestore
+        .collection(FirebaseSettings.usersCollection)
+        .doc(userId)
+        .get();
     return List<int>.from(doc['favoriteMovies']);
   }
 
@@ -65,30 +74,41 @@ class UserService {
 
   Future<void> addBookmark(Movie movie) async {
     String userId = _auth.currentUser!.uid;
-    await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).update({
+    await _firestore
+        .collection(FirebaseSettings.usersCollection)
+        .doc(userId)
+        .update({
       'bookmarkedMovies': FieldValue.arrayUnion([movie.id]),
     });
   }
 
   Future<void> removeBookmark(int movieId) async {
     String userId = _auth.currentUser!.uid;
-    await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).update({
+    await _firestore
+        .collection(FirebaseSettings.usersCollection)
+        .doc(userId)
+        .update({
       'bookmarkedMovies': FieldValue.arrayRemove([movieId]),
     });
   }
 
   Future<bool> isMovieBookmarked(int movieId) async {
     String userId = _auth.currentUser!.uid;
-    DocumentSnapshot doc = await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).get();
+    DocumentSnapshot doc = await _firestore
+        .collection(FirebaseSettings.usersCollection)
+        .doc(userId)
+        .get();
     List<dynamic> bookmarkedMovies = doc['bookmarkedMovies'] ?? [];
     return bookmarkedMovies.contains(movieId);
   }
 
   Future<List<int>> getBookmarkedMovies() async {
     String userId = _auth.currentUser!.uid;
-    DocumentSnapshot doc = await _firestore.collection(FirebaseSettings.usersCollection).doc(userId).get();
+    DocumentSnapshot doc = await _firestore
+        .collection(FirebaseSettings.usersCollection)
+        .doc(userId)
+        .get();
     List<dynamic> bookmarkedMovies = doc.get('bookmarkedMovies') ?? [];
     return bookmarkedMovies.cast<int>();
   }
 }
-

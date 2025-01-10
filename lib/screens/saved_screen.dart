@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../config/app_settings.dart';
 import '../models/movie_model.dart';
 import '../services/user_service.dart';
 import '../services/movie_service.dart';
@@ -9,9 +8,10 @@ import 'home_screen.dart';
 import 'search_screen.dart';
 import 'downloads_screen.dart';
 import 'profile_screen.dart';
-import '../widgets/custom_bottom_nav222.dart';
 
 class SavedScreen extends StatefulWidget {
+  const SavedScreen({super.key});
+
   @override
   _SavedScreenState createState() => _SavedScreenState();
 }
@@ -36,8 +36,7 @@ class _SavedScreenState extends State<SavedScreen> {
     try {
       final bookmarkedMovieIds = await _userService.getBookmarkedMovies();
       final movies = await Future.wait(
-          bookmarkedMovieIds.map((id) => _movieService.getMovieDetails(id))
-      );
+          bookmarkedMovieIds.map((id) => _movieService.getMovieDetails(id)));
       setState(() {
         _savedMovies = movies;
       });
@@ -63,40 +62,45 @@ class _SavedScreenState extends State<SavedScreen> {
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _savedMovies.isEmpty
-          ? Center(child: Text('No saved movies', style: TextStyle(color: Colors.white)))
-          : ListView.builder(
-        itemCount: _savedMovies.length,
-        itemBuilder: (context, index) {
-          final movie = _savedMovies[index];
-          return ListTile(
-            leading: movie.posterUrl != null
-                ? Image.network(
-              movie.posterUrl!,
-              width: 50,
-              height: 75,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  Icon(Icons.movie, size: 50, color: Colors.grey),
-            )
-                : Icon(Icons.movie, size: 50, color: Colors.grey),
-            title: Text(movie.title, style: TextStyle(color: Colors.white)),
-            subtitle: Text(
-              movie.overview,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MovieDetailScreen(movie: movie),
+              ? Center(
+                  child: Text('No saved movies',
+                      style: TextStyle(color: Colors.white)))
+              : ListView.builder(
+                  itemCount: _savedMovies.length,
+                  itemBuilder: (context, index) {
+                    final movie = _savedMovies[index];
+                    return ListTile(
+                      leading: movie.posterUrl != null
+                          ? Image.network(
+                              movie.posterUrl!,
+                              width: 50,
+                              height: 75,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(Icons.movie,
+                                      size: 50, color: Colors.grey),
+                            )
+                          : Icon(Icons.movie, size: 50, color: Colors.grey),
+                      title: Text(movie.title,
+                          style: TextStyle(color: Colors.white)),
+                      subtitle: Text(
+                        movie.overview,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MovieDetailScreen(movie: movie),
+                          ),
+                        ).then((_) => _loadSavedMovies());
+                      },
+                    );
+                  },
                 ),
-              ).then((_) => _loadSavedMovies());
-            },
-          );
-        },
-      ),
       bottomNavigationBar: CustomBottomNav(
         currentIndex: 2,
         onTap: (index) {
@@ -133,4 +137,3 @@ class _SavedScreenState extends State<SavedScreen> {
     );
   }
 }
-

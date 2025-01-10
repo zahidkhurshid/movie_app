@@ -5,6 +5,8 @@ import '../config/app_settings.dart';
 import 'home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }
@@ -158,9 +160,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   SizedBox(height: 24),
                   ElevatedButton(
-                    child: _isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Sign Up'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppSettings.primaryColor,
                       padding: EdgeInsets.symmetric(vertical: 16),
@@ -169,6 +168,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     onPressed: _isLoading ? null : _signup,
+                    child: _isLoading
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text('Sign Up'),
                   ),
                   if (_errorMessage.isNotEmpty)
                     Padding(
@@ -207,4 +209,3 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
-

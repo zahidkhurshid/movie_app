@@ -10,8 +10,9 @@ import 'saved_screen.dart';
 import 'downloads_screen.dart';
 import 'profile_screen.dart';
 
-
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -34,7 +35,8 @@ class _SearchScreenState extends State<SearchScreen> {
     });
 
     try {
-      final results = await Provider.of<MovieService>(context, listen: false).searchMovies(query);
+      final results = await Provider.of<MovieService>(context, listen: false)
+          .searchMovies(query);
       setState(() {
         _searchResults = results;
         _isLoading = false;
@@ -82,38 +84,43 @@ class _SearchScreenState extends State<SearchScreen> {
             child: _isLoading
                 ? Center(child: CircularProgressIndicator())
                 : _searchResults.isEmpty
-                ? Center(child: Text('No results found', style: TextStyle(color: Colors.white)))
-                : ListView.builder(
-              itemCount: _searchResults.length,
-              itemBuilder: (context, index) {
-                final movie = _searchResults[index];
-                return ListTile(
-                  leading: Image.network(
-                    '${AppSettings.imageBaseUrl}${movie.posterPath}',
-                    width: 50,
-                    height: 75,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Icon(Icons.movie, size: 50, color: Colors.grey),
-                  ),
-                  title: Text(movie.title, style: TextStyle(color: Colors.white)),
-                  subtitle: Text(
-                    movie.overview,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieDetailScreen(movie: movie),
+                    ? Center(
+                        child: Text('No results found',
+                            style: TextStyle(color: Colors.white)))
+                    : ListView.builder(
+                        itemCount: _searchResults.length,
+                        itemBuilder: (context, index) {
+                          final movie = _searchResults[index];
+                          return ListTile(
+                            leading: Image.network(
+                              '${AppSettings.imageBaseUrl}${movie.posterPath}',
+                              width: 50,
+                              height: 75,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(Icons.movie,
+                                      size: 50, color: Colors.grey),
+                            ),
+                            title: Text(movie.title,
+                                style: TextStyle(color: Colors.white)),
+                            subtitle: Text(
+                              movie.overview,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      MovieDetailScreen(movie: movie),
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
-                    );
-                  },
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -153,4 +160,3 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
-

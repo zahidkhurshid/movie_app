@@ -32,8 +32,14 @@ class MovieList extends StatelessWidget {
                 leading: Hero(
                   tag: 'movie-${movie.id}',
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppSettings.defaultBorderRadius),
-                    child: Image.network(movie.posterUrl ?? 'https://example.com/default_image.png', width: 50, height: 75, fit: BoxFit.cover),
+                    borderRadius:
+                        BorderRadius.circular(AppSettings.defaultBorderRadius),
+                    child: Image.network(
+                        movie.posterUrl ??
+                            'https://example.com/default_image.png',
+                        width: 50,
+                        height: 75,
+                        fit: BoxFit.cover),
                   ),
                 ),
                 title: Text(movie.title, style: AppSettings.headlineStyle),
@@ -59,4 +65,3 @@ class MovieList extends StatelessWidget {
     );
   }
 }
-

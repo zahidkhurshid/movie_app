@@ -7,7 +7,8 @@ class RatingBar extends StatelessWidget {
   final double maxRating;
   final ValueChanged<double> onRatingUpdate;
 
-  const RatingBar({super.key,
+  const RatingBar({
+    super.key,
     required this.initialRating,
     required this.minRating,
     required this.maxRating,
@@ -16,7 +17,7 @@ class RatingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = AppSettings.iconSize ?? 24.0; // Default icon size
+    final iconSize = AppSettings.iconSize; // Default icon size
     final availableWidth = MediaQuery.of(context).size.width;
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: availableWidth),
@@ -24,7 +25,7 @@ class RatingBar extends StatelessWidget {
         spacing: 4.0,
         children: List.generate(
           (maxRating / AppSettings.ratingStep).round(),
-              (index) {
+          (index) {
             final rating = (index + 1) * AppSettings.ratingStep;
             return IconButton(
               iconSize: iconSize,
@@ -40,4 +41,3 @@ class RatingBar extends StatelessWidget {
     );
   }
 }
-

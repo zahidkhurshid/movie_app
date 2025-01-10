@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../config/app_settings.dart';
 import '../models/movie_model.dart';
 import '../services/download_service.dart';
@@ -8,14 +7,16 @@ import '../screens/profile_screen.dart';
 import '../screens/saved_screen.dart';
 import '../screens/search_screen.dart';
 import '../widgets/custom_bottom_nav.dart';
-import '../widgets/custom_bottom_nav222.dart';
 
 class DownloadsScreen extends StatefulWidget {
+  const DownloadsScreen({super.key});
+
   @override
   _DownloadsScreenState createState() => _DownloadsScreenState();
 }
 
-class _DownloadsScreenState extends State<DownloadsScreen> with SingleTickerProviderStateMixin {
+class _DownloadsScreenState extends State<DownloadsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final DownloadService _downloadService = DownloadService();
 
@@ -105,9 +106,13 @@ class _DownloadsScreenState extends State<DownloadsScreen> with SingleTickerProv
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.white)));
+          return Center(
+              child: Text('Error: ${snapshot.error}',
+                  style: TextStyle(color: Colors.white)));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No downloaded movies', style: TextStyle(color: Colors.white)));
+          return Center(
+              child: Text('No downloaded movies',
+                  style: TextStyle(color: Colors.white)));
         } else {
           return ListView.builder(
             itemCount: snapshot.data!.length,
@@ -123,7 +128,9 @@ class _DownloadsScreenState extends State<DownloadsScreen> with SingleTickerProv
 
   Widget _buildDownloadingTab() {
     // TODO: Implement downloading movies list
-    return Center(child: Text('No movies currently downloading', style: TextStyle(color: Colors.white)));
+    return Center(
+        child: Text('No movies currently downloading',
+            style: TextStyle(color: Colors.white)));
   }
 
   Widget _buildMovieCard(Movie movie) {
@@ -151,7 +158,8 @@ class _DownloadsScreenState extends State<DownloadsScreen> with SingleTickerProv
                 children: [
                   Text(
                     movie.title,
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -189,8 +197,9 @@ class _DownloadsScreenState extends State<DownloadsScreen> with SingleTickerProv
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    }
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 }
-

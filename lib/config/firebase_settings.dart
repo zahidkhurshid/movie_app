@@ -2,7 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseSettings {
   static const String apiKey = "AIzaSyA7e4w8a_i9fczJSAR8iWuITp-LVsbvUdA";
-  static const String authDomain = "my-movie-recommendation-app.firebaseapp.com";
+  static const String authDomain =
+      "my-movie-recommendation-app.firebaseapp.com";
   static const String projectId = "my-movie-recommendation-app";
   static const String storageBucket = "my-movie-recommendation-app.appspot.com";
   static const String messagingSenderId = "34670391117";
@@ -37,4 +38,3 @@ class FirebaseSettings {
   // Cloud Functions region
   static const String cloudFunctionsRegion = "us-central1";
 }
-

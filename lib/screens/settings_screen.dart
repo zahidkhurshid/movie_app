@@ -5,6 +5,8 @@ import '../providers/theme_provider.dart';
 import '../services/movie_service.dart';
 
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -13,15 +15,22 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
-        title: Text('Settings', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
+        title: Text('Settings',
+            style: TextStyle(
+                color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: themeProvider.isDarkMode ? Colors.white : Colors.black),
+        iconTheme: IconThemeData(
+            color: themeProvider.isDarkMode ? Colors.white : Colors.black),
       ),
       body: ListView(
         children: [
           SwitchListTile(
-            title: Text('Dark Mode', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
+            title: Text('Dark Mode',
+                style: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.white
+                        : Colors.black)),
             value: themeProvider.isDarkMode,
             onChanged: (value) {
               themeProvider.toggleTheme();
@@ -29,7 +38,11 @@ class SettingsScreen extends StatelessWidget {
             activeColor: AppSettings.primaryColor,
           ),
           ListTile(
-            title: Text('Clear Search History', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
+            title: Text('Clear Search History',
+                style: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.white
+                        : Colors.black)),
             onTap: () async {
               await movieService.clearSearchHistory();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -38,24 +51,39 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Privacy Policy', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
+            title: Text('Privacy Policy',
+                style: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.white
+                        : Colors.black)),
             onTap: () {
               // TODO: Navigate to privacy policy screen
             },
           ),
           ListTile(
-            title: Text('Terms of Service', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
+            title: Text('Terms of Service',
+                style: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.white
+                        : Colors.black)),
             onTap: () {
               // TODO: Navigate to terms of service screen
             },
           ),
           ListTile(
-            title: Text('App Version', style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : Colors.black)),
-            trailing: Text(AppSettings.appVersion, style: TextStyle(color: themeProvider.isDarkMode ? Colors.grey[300] : Colors.grey[600])),
+            title: Text('App Version',
+                style: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.white
+                        : Colors.black)),
+            trailing: Text(AppSettings.appVersion,
+                style: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.grey[300]
+                        : Colors.grey[600])),
           ),
         ],
       ),
     );
   }
 }
-

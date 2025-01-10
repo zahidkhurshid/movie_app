@@ -5,10 +5,10 @@ class CustomBottomNav extends StatelessWidget {
   final Function(int) onTap;
 
   const CustomBottomNav({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +42,16 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 
-  BottomNavigationBarItem _buildNavItem(IconData icon, String label, int index) {
+  BottomNavigationBarItem _buildNavItem(
+      IconData icon, String label, int index) {
     return BottomNavigationBarItem(
       icon: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: currentIndex == index ? Colors.red.withOpacity(0.1) : Colors.transparent,
+          color: currentIndex == index
+              ? Colors.red.withOpacity(0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon),
@@ -57,4 +60,3 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 }
-
