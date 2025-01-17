@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseSettings {
-  static const String apiKey = "AIzaSyA7e4w8a_i9fczJSAR8iWuITp-LVsbvUdA";
+  static const String apiKey = "Your API Key";
   static const String authDomain =
       "my-movie-recommendation-app.firebaseapp.com";
   static const String projectId = "my-movie-recommendation-app";
