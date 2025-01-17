@@ -6,8 +6,8 @@ class FirebaseSettings {
       "my-movie-recommendation-app.firebaseapp.com";
   static const String projectId = "my-movie-recommendation-app";
   static const String storageBucket = "my-movie-recommendation-app.appspot.com";
-  static const String messagingSenderId = "34670391117";
-  static const String appId = "1:34670391117:android:3de24460ba6c65c39b9104";
+  static const String messagingSenderId = "messagingSenderId";
+  static const String appId = "appId";
 
   static const FirebaseOptions firebaseOptions = FirebaseOptions(
     apiKey: apiKey,
